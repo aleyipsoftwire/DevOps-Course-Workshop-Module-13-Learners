@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask, render_template, request
 from datetime import datetime, timezone
 
@@ -12,6 +14,8 @@ app.config.from_object(Config)
 
 initialise_database(app)
 initialise_scheduled_jobs(app)
+
+logging.basicConfig(level=logging.INFO)
 
 
 @app.route("/")
@@ -35,7 +39,9 @@ def index():
 
 @app.route("/count")
 def count():
-    return { 'count': count_orders() }
+    order_count = count_orders()
+    app.logger.info(f'Counted {order_count} orders')
+    return { 'count': order_count }
 
 
 @app.route("/new", methods=["POST"])
@@ -46,6 +52,7 @@ def new_order():
     download = create_product_download(product)
     try:
         order = add_order(product, customer, date_placed, None, download)
+        app.logger.info(f'Added order {order["id"]}')
     except Exception as e:
         return str(e)
 
