@@ -15,7 +15,7 @@ app.config.from_object(Config)
 initialise_database(app)
 initialise_scheduled_jobs(app)
 
-logging.basicConfig(level=logging.INFO) # QQ
+logging.basicConfig(level=logging.INFO)
 
 
 @app.route("/")
